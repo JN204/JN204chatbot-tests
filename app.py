@@ -4,14 +4,14 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# ---------------- Config ----------------
+# Configurations here
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 OPENROUTER_MODEL   = os.getenv("OPENROUTER_MODEL", "meta-llama/llama-3.1-8b-instruct")
 
 st.set_page_config(page_title="Jason's Chatbot", page_icon="💬")
 st.title("Jason's Testing Chatbot (OpenRouter)")
 
-# ---------------- Helpers ----------------
+# Warnings here
 def gen_openrouter(messages):
     if not OPENROUTER_API_KEY:
         raise RuntimeError(
@@ -20,15 +20,14 @@ def gen_openrouter(messages):
 
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-        # The two headers below are optional but recommended by OpenRouter:
-        "HTTP-Referer": "https://example.com",     # change to your site if you want
+        "HTTP-Referer": "https://example.com",    
         "X-Title": "Jason Testing Chatbot",
         "Content-Type": "application/json",
     }
     payload = {
         "model": OPENROUTER_MODEL,
-        "messages": messages,   # OpenRouter supports the OpenAI-style chat format
-        "temperature": 0.2,     # fixed; users can't change it
+        "messages": messages,  
+        "temperature": 0.2,     # higher the temperature, the more creative the messages.
     }
 
     r = requests.post(
@@ -41,7 +40,7 @@ def gen_openrouter(messages):
     data = r.json()
     return data["choices"][0]["message"]["content"]
 
-# ---------------- Chat state ----------------
+# GenAI chatbot information
 if "messages" not in st.session_state:
     st.session_state.messages = [
         {
@@ -54,14 +53,14 @@ if "messages" not in st.session_state:
         },
     ]
 
-# Render history (skip system)
+# History and memorization 
 for m in st.session_state.messages:
     if m["role"] == "system":
         continue
     with st.chat_message(m["role"]):
         st.write(m["content"])
 
-# ---------------- Input & response ----------------
+# Inputs and Responses
 user_msg = st.chat_input("Type your message…")
 if user_msg:
     st.session_state.messages.append({"role": "user", "content": user_msg})
@@ -70,7 +69,6 @@ if user_msg:
 
     with st.chat_message("assistant"):
         try:
-            # keep prompts small
             window = st.session_state.messages[-20:]
             answer = gen_openrouter(window)
             st.write(answer)
