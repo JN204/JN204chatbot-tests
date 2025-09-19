@@ -1,3 +1,4 @@
+#Not all files are used here, mainly only using streamlit, os, requests, and dotenv for now until further progress.
 streamlit
 openai
 faiss-cpu
