@@ -1,0 +1,12 @@
+streamlit
+openai
+faiss-cpu
+pypdf
+tiktoken
+python-dotenv
+langchain
+langchain-community
+langchain-openai
+PyPDF2
+sentence-transformers
+requests
